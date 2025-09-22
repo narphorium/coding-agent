@@ -6,6 +6,6 @@ export const dynamic = 'force-dynamic';
 // export const runtime = 'edge';
 
 export async function POST(req: Request) {
-  const { messages, sessionID, repositoryPath } = await req.json();
-  return createChatCompletion(messages, sessionID, repositoryPath);
+  const { messages, sessionID, repositoryPath, model } = await req.json();
+  return createChatCompletion(messages, sessionID, repositoryPath, model);
 }
