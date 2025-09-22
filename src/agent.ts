@@ -60,7 +60,7 @@ Always be thorough in your analysis and provide clear explanations of what you f
   });
 
   const data = new StreamData();
-  const stream = OpenAIStream(response, {
+  const stream = OpenAIStream(response as any, {
     experimental_onToolCall: async (
       call: ToolCallPayload,
       appendToolCallMessage,
@@ -87,7 +87,7 @@ Always be thorough in your analysis and provide clear explanations of what you f
         stream: true,
         tools,
         tool_choice: 'auto',
-      });
+      }) as any;
     },
     onCompletion(completion) {
       console.log('completion', completion);
