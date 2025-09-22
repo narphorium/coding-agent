@@ -1,6 +1,5 @@
 'use client';
 
-import MessageContent from '@/components/chat/MessageContent';
 import ToolResult from '@/components/chat/ToolResult';
 import { ToolCallResult } from '@/components/chat/types';
 import ModelPicker from '@/components/ModelPicker';
@@ -28,18 +27,6 @@ export default function Chat() {
   });
 
   const toolCallsResults = data ? (data as unknown as ToolCallResult[]) : [];
-  
-  // Debug logging
-  console.log('Messages:', messages);
-  console.log('Tool results:', toolCallsResults);
-  messages.forEach((msg, idx) => {
-    console.log(`Message ${idx}:`, {
-      role: msg.role,
-      content: msg.content?.substring(0, 100),
-      tool_calls: msg.tool_calls,
-      id: msg.id
-    });
-  });
 
   // Hide status message when first chat message is sent
   useEffect(() => {
@@ -68,7 +55,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-4xl pt-8 pb-24 mx-auto">
+    <div className="flex flex-col w-full max-w-4xl py-8 mx-auto">
       {/* Repository Selector Section - Only show if repo not cloned */}
       {!repoCloned && (
         <div className="mb-8">
@@ -88,39 +75,21 @@ export default function Chat() {
       {repoCloned && (
         <div className="flex flex-col w-full max-w-md mx-auto">
           {messages.length > 0
-            ? messages.map((m: Message, i: number) => {
-              // For the last assistant message, show all tool results
-              const isLastAssistantMessage = m.role === 'assistant' && 
-                !messages.slice(i + 1).some(msg => msg.role === 'assistant');
-              
-              return (
-                <div
-                  key={m.id}
-                  className="whitespace-pre-wrap"
-                  style={{ color: roleToColorMap[m.role] }}
-                >
-                  <strong>{`${m.role}: `}</strong>
-                  {m.role === 'assistant' && m.content ? (
-                    <MessageContent content={m.content} />
-                  ) : (
-                    m.content || JSON.stringify(m.tool_calls)
-                  )}
-                  
-                  {/* Display tool results for the last assistant message */}
-                  {isLastAssistantMessage && toolCallsResults.length > 0 && (
-                    <div className="mt-4 space-y-2">
-                      <div className="text-sm text-gray-600 font-semibold">Tool Calls:</div>
-                      {toolCallsResults.map(t => (
-                        <ToolResult key={t.tool_call_id} toolCallResult={t} />
-                      ))}
-                    </div>
-                  )}
-                  
-                  <br />
-                  <br />
-                </div>
-              );
-            })
+            ? messages.map((m: Message, i: number) => (
+              <div
+                key={m.id}
+                className="whitespace-pre-wrap"
+                style={{ color: roleToColorMap[m.role] }}
+              >
+                {toolCallsResults.filter(t => t.messageIdx === i).map(t => (
+                  <ToolResult key={t.tool_call_id} toolCallResult={t} />
+                ))}
+                <strong>{`${m.role}: `}</strong>
+                {m.content || JSON.stringify(m.tool_calls)}
+                <br />
+                <br />
+              </div>
+            ))
             : null}
           <div id="chart-goes-here"></div>
           {isLoading && <div className="fixed bottom-24 flex justify-center w-full max-w-md"><Spinner /></div>}
