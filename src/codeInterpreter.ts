@@ -51,7 +51,7 @@ export async function evaluateCode(
  * @param sessionID The session ID to get the sandbox for.
  * @returns The sandbox for the given session ID.
  */
-async function getSandbox(sessionID: string) {
+export async function getSandbox(sessionID: string) {
   const sandboxes = await Sandbox.list();
 
   // We check if the sandbox is already running for the given session ID.
