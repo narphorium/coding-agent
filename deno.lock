@@ -209,6 +209,8 @@
         "npm:next@^14.2.3",
         "npm:openai@^4.40.1",
         "npm:postcss@^8.4.23",
+        "npm:react-dom@^19.1.1",
+        "npm:react@^19.1.1",
         "npm:tailwindcss@^3.3.2",
         "npm:typescript@5.1.3"
       ]
