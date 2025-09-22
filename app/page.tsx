@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { generateId } from 'ai';
 import { Message, useChat } from 'ai/react';
+import { useState } from 'react';
+import RepoSelector from '../components/RepoSelector';
 import Spinner from './Spinner';
 
 // Specific to the e2b code interpreter
@@ -48,6 +49,7 @@ function ToolResult({ toolCallResult }: { toolCallResult: ToolCallResult }) {
 
 export default function Chat() {
   const [sessionID] = useState(generateId(4));
+  const [repoSelected, setRepoSelected] = useState(false);
 
   const { messages, input, handleInputChange, handleSubmit, data, isLoading } = useChat({
     api: '/api/chat',
@@ -68,10 +70,22 @@ export default function Chat() {
     data: 'orange',
   };
 
+  const handleRepoSelected = (result: any) => {
+    setRepoSelected(true);
+    console.log('Repository selected:', result);
+  };
+
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+    <div className="flex flex-col w-full max-w-4xl py-8 mx-auto">
+      {/* Repository Selector Section */}
+      <div className="mb-8">
+        <RepoSelector sessionID={sessionID} onRepoSelected={handleRepoSelected} />
+      </div>
+
+      {/* Chat Section */}
+      <div className="flex flex-col w-full max-w-md mx-auto">
       {messages.length > 0
-        ? messages.map((m: Message, i) => (
+        ? messages.map((m: Message, i: number) => (
           <div
             key={m.id}
             className="whitespace-pre-wrap"
@@ -87,16 +101,17 @@ export default function Chat() {
           </div>
         ))
         : null}
-      <div id="chart-goes-here"></div>
-      {isLoading && <div className="fixed bottom-24 flex justify-center w-full max-w-md"><Spinner /></div>}
-      <form onSubmit={handleSubmit}>
-        <input
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
-          value={input}
-          placeholder="Say something..."
-          onChange={handleInputChange}
-        />
-      </form>
+        <div id="chart-goes-here"></div>
+        {isLoading && <div className="fixed bottom-24 flex justify-center w-full max-w-md"><Spinner /></div>}
+        <form onSubmit={handleSubmit}>
+          <input
+            className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
+            value={input}
+            placeholder="Say something..."
+            onChange={handleInputChange}
+          />
+        </form>
+      </div>
     </div>
   );
 }
