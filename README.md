@@ -6,14 +6,27 @@ An autonomous coding agent built on top of E2B Sandbox that can accomplish user-
 
 **Autonomous Operation**: The agent can work independently on coding tasks without constant human intervention
 
-**Repository Management**: Clone and work with any GitHub repository in an isolated sandbox environment
+**Repository Management**: Clone and work with any GitHub repository in an isolated sandbox environment with an intuitive web interface
 
-**Code Exploration**: 
+**Multi-Model Support**: Choose from multiple AI models:
+- GPT-4o (most advanced with latest capabilities)
+- GPT-4o Mini (compact version with high performance)
+- GPT-4 Turbo (high-quality reasoning and analysis)
+- GPT-3.5 Turbo (fast and efficient for most tasks)
+
+**Enhanced Chat Interface**:
+- Streaming chat with real-time responses
+- Rich tool result visualization
+- Repository status tracking
+- Model selection during conversation
+
+**Code Exploration**:
 - Get full project directory structure
 - Read and analyze any file in the repository
 - Understand codebase organization and relationships
+- File editing and writing capabilities
 
-**Python Code Execution**: 
+**Python Code Execution**:
 - Execute Python code in a persistent Jupyter Notebook environment
 - Maintain state between executions (variables, imports, functions persist)
 - Full access to Python ecosystem and libraries
@@ -23,17 +36,21 @@ An autonomous coding agent built on top of E2B Sandbox that can accomplish user-
 **Tool Integration**: The agent has access to specialized tools:
 - `project_layout`: Explore repository structure
 - `read_file`: Read and analyze any file
+- `write_file`: Create new files
+- `edit_file`: Modify existing files
 - `execute_python_code`: Run Python code with persistent state
+- `bash`: Execute shell commands
 
 ## Architecture
 
 The agent is built with a modular architecture:
 
-- **Frontend**: Next.js React app with streaming chat interface
+- **Frontend**: Next.js React app with streaming chat interface and modern UI components
 - **Backend**: Next.js API routes handling tool execution and sandbox management
-- **Sandbox**: E2B Code Interpreter for secure, isolated code execution
-- **LLM**: OpenAI GPT-4 Turbo for natural language understanding and task planning
-- **Tools**: Specialized functions for repository operations and code execution
+- **Sandbox**: E2B Code Interpreter with custom Docker environment for secure, isolated code execution
+- **LLM**: Multiple OpenAI models (GPT-4o, GPT-4 Turbo, GPT-3.5 Turbo) for natural language understanding and task planning
+- **UI Components**: Shadcn/ui components with Tailwind CSS for modern interface design
+- **Tools**: Specialized functions for repository operations, file manipulation, and code execution
 
 ## Setup
 
@@ -48,18 +65,20 @@ E2B_API_KEY=your_e2b_api_key # Get one at https://e2b.dev/docs
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-3. Start the development server:
+4. Start the development server:
 ```bash
 npm run dev
 ```
 
-4. Open `http://localhost:3000` in your browser
+5. Open `http://localhost:3000` in your browser
 
 ## Usage
 
-1. **Clone a Repository**: Enter a GitHub URL to clone a repository into the sandbox
-2. **Chat with the Agent**: Describe your coding task or goal in natural language
-3. **Watch the Agent Work**: The agent will autonomously explore the codebase, read files, and execute code to accomplish your task
+1. **Clone a Repository**: Enter a GitHub URL in the repository selector to clone it into the sandbox
+2. **Select AI Model**: Choose your preferred model from the dropdown (GPT-4o, GPT-4o Mini, GPT-4 Turbo, or GPT-3.5 Turbo)
+3. **Chat with the Agent**: Describe your coding task or goal in natural language
+4. **Monitor Progress**: Watch real-time tool execution and results as the agent works
+5. **View Results**: See file changes, code execution outputs, and task completion status
 
 ## Example Tasks
 
@@ -71,18 +90,29 @@ npm run dev
 
 ## Technical Implementation
 
-### Agent Core (`src/agent.ts`)
-The main agent logic that orchestrates tool calls and maintains conversation state with the LLM.
+### Chat Interface (`app/page.tsx`)
+Modern React component with streaming chat, repository cloning interface, model selection, and real-time tool result visualization.
 
-### Code Interpreter (`src/codeInterpreter.ts`)
-Manages E2B sandbox lifecycle and Python code execution with persistent state.
+### UI Components (`components/`)
+- **RepoSelector**: GitHub repository cloning interface with validation and status feedback
+- **ModelPicker**: Dropdown selector for choosing between different AI models
+- **Chat Components**: Specialized displays for different tool results (file reading, code execution, etc.)
+- **UI Library**: Shadcn/ui components for consistent, accessible interface design
 
-### Tools
-- **Project Layout** (`src/tools/project_layout.ts`): Generates directory structure trees
-- **Read File** (`src/tools/read_file.ts`): Reads file contents from the sandbox filesystem
-- **Execute Python** (`src/tools/execute_python_code.ts`): Executes Python code in Jupyter environment
+### API Routes (`app/api/`)
+- **Chat** (`app/api/chat/route.ts`): Handles chat messages, tool execution, and model switching
+- **Git Checkout** (`app/api/git-checkout/route.ts`): Manages repository cloning into sandbox
+- **Apply Edit** (`app/api/apply-edit/route.ts`): Handles file editing operations
 
-### Repository Management (`app/api/git-checkout/route.ts`)
-Handles cloning GitHub repositories into the sandbox environment.
+### E2B Sandbox Configuration
+- **Custom Dockerfile** (`e2b.Dockerfile`): Extended sandbox with git support and additional tools
+- **Template Configuration** (`e2b.toml`): Sandbox template with persistent state and startup scripts
 
-The agent maintains session state across tool calls, allowing it to build understanding incrementally and perform complex multi-step tasks autonomously.
+### Tool System
+Comprehensive tool integration for autonomous operation:
+- File system operations (read, write, edit)
+- Code execution (Python, shell commands)
+- Repository exploration and manipulation
+- Real-time result streaming and visualization
+
+The agent maintains session state across tool calls, allowing it to build understanding incrementally and perform complex multi-step tasks autonomously with full visibility into the process.
